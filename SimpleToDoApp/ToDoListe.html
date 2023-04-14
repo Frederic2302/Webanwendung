@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="./script.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+</head>
+<body>
+    <h1>Meine coole Todo App</h1>
+    <input type="text" name="neues ToDo"><button id="add-todo-button">Todo hinzufügen</button>
+    <ul>
+    </ul>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // DOM fertig
+            const addToDoButton = document.querySelector("#add-todo-button");
+            // Hier wird die Funktion übergeben also eine Referenz auf die Funktion 
+            addToDoButton.addEventListener("click", addToDoItem); 
+
+            const persistendItems = loadItemsFromLocalStorage();
+            console.log("Aus dem storage", persistendItems);
+
+            for(let i=0; i< persistendItems.length; i++) {
+                const item = persistendItems[i];
+                renderTodoItem(item);
+            }
+        });
+
+        function renderTodoItem(itemTorender) {
+            // Erzuege ein neues li element 
+            const todoItem = document.createElement("li");
+                // Füge text zum neuen Element hinzu 
+                todoItem.textContent = itemTorender;
+
+                todoItem.addEventListener("click", removeToDoItem);
+
+                // FÜge neues Element dem DOM hinzu, sonst würde nichts passieren 
+                const todoList = document.querySelector("ul");
+                todoList.append(todoItem);
+        }
+
+        function addToDoItem() {
+            // Hole das Input Element indem der Text steht 
+            const todoInput = document.querySelector("body > input[type=text]"); 
+                // Hole den Text aus dem Input element
+                const todoText = todoInput.value;
+
+                // Gibt es überhaupt eine EIngabe?
+                if(todoText === "") {
+                    reutrn; 
+                }
+
+                // Erzuege ein neues li element 
+                const todoItem = document.createElement("li");
+                // Füge text zum neuen Element hinzu 
+                todoItem.textContent = todoText;
+
+                todoItem.addEventListener("click", removeToDoItem);
+
+                // FÜge neues Element dem DOM hinzu, sonst würde nichts passieren 
+                const todoList = document.querySelector("ul");
+                todoList.append(todoItem);
+
+                // Reset Input Feld 
+                todoInput.value = "";
+
+                // "persistenz" mit localStorage
+                addItemToLocalStorage(todoText);
+
+                /*addToDoButton.addEventListener("click", () => {
+                    console.log("ToDo hinzufügen button gedrückt!");
+                });
+                addToDoButton.addEventListener("mouseover", () => {
+                    console.log("Maus über dem button");
+                });*/
+        }
+
+        // Immer wenn ein Event Passiert teilt der BRowser das mit mit dem eventData
+        function removeToDoItem(eventData) {
+            const itemToRemove = eventData.target;
+            const itemText = itemToRemove.innerText;
+            itemToRemove.remove();
+
+            removeItemFromLocalStorage(itemText);
+        }
+
+
+        function addItemToLocalStorage(todoText) {
+            let itemsFromStorage = window.localStorage.getItem("todo-items");
+            if(itemsFromStorage === null) {
+                itemsFromStorage = [];
+            } 
+            else {
+                itemsFromStorage = JSON.parse(itemsFromStorage);
+            }
+
+            itemsFromStorage.push(todoText);
+
+            window.localStorage.setItem("todo-items", JSON.stringify(itemsFromStorage));
+        }
+
+        function loadItemsFromLocalStorage() {
+            const items = window.localStorage.getItem("todo-items");
+
+            if(items === null) {
+                return [];
+            }
+
+            return JSON.parse(items);
+        }
+
+        function removeItemFromLocalStorage(itemTextToDelete) {
+            let persistendItems = loadItemsFromLocalStorage(); 
+
+            let filteredItems = persistendItems.filter((currentItem) => currentItem != itemTextToDelete);
+
+            window.localStorage.setItem("todo-items", JSON.stringify(filteredItems));
+        }
+    </script>
+</body>
+</html>
