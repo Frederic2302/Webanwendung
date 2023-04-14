@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="./script.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+</head>
+<body>
+    <h1>Meine coole Todo App</h1>
+    <input type="text" name="neues ToDo"><button id="add-todo-button">Todo hinzufügen</button>
+    <ul>
+    </ul>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // DOM fertig
+            const addToDoButton = document.querySelector("#add-todo-button");
+            // Hier wird die Funktion übergeben also eine Referenz auf die Funktion 
+            addToDoButton.addEventListener("click", addToDoItem); 
+        });
+
+        function addToDoItem() {
+            // Hole das Input Element indem der Text steht 
+            const todoInput = document.querySelector("body > input[type=text]"); 
+                // Hole den Text aus dem Input element
+                const todoText = todoInput.value;
+
+                // Gibt es überhaupt eine EIngabe?
+                if(todoText === "") {
+                    reutrn; 
+                }
+
+                // Erzuege ein neues li element 
+                const todoItem = document.createElement("li");
+                // Füge text zum neuen Element hinzu 
+                todoItem.textContent = todoText;
+
+                todoItem.addEventListener("click", removeToDoItem);
+
+                // FÜge neues Element dem DOM hinzu, sonst würde nichts passieren 
+                const todoList = document.querySelector("ul");
+                todoList.append(todoItem);
+
+                // Reset Input Feld 
+                todoInput.value = "";
+
+                /*addToDoButton.addEventListener("click", () => {
+                    console.log("ToDo hinzufügen button gedrückt!");
+                });
+                addToDoButton.addEventListener("mouseover", () => {
+                    console.log("Maus über dem button");
+                });*/
+        }
+
+        // Immer wenn ein Event Passiert teilt der BRowser das mit mit dem eventData
+        function removeToDoItem(eventData) {
+            const itemToRemove = eventData.target;
+            itemToRemove.remove();
+        }
+    </script>
+</body>
+</html>
